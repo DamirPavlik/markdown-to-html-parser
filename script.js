@@ -17,42 +17,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let lines = val.split('\n');
         let html = ``;
         for (let i = 0; i < lines.length; i++) {
-            lines[i] = lines[i].trim();
-            if (lines[i] === "") {
+            line = lines[i].trim();
+            if (line === "") {
                 console.log("jebem ti mamu");
                 continue;
             }
-
-            if (lines[i].startsWith("#") && lines[i][1] === " ") {
-                const content = lines[i].split(" ").slice(1).join(" ");
-                html += `<p>${escapeHTML("<h1>" + content + "</h1>")}</p>`;
+            let level = 0;
+            while (level < line.length && line[level] === "#") {
+                level ++;
             }
 
-            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === " ") {
-                const content = lines[i].split(" ").slice(1).join(" ");
-                html += `<p>${escapeHTML("<h2>" + content + "</h2>")}</p>`;
+            if (level >= 1 && level <= 6 && line[level] === " ") {
+                const content = line.slice(level + 1).trim();
+                html += `<p>${escapeHTML(`<h${level}>${content}</h${level}>`)}</p>`;
             }
-
-            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === "#" && lines[i][3] === " ") {
-                const content = lines[i].split(" ").slice(1).join(" ");
-                html += `<p>${escapeHTML("<h3>" + content + "</h3>")}</p>`;
-            }
-
-            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === "#" && lines[i][3] === "#" && lines[i][4] === " ") {
-                const content = lines[i].split(" ").slice(1).join(" ");
-                html += `<p>${escapeHTML("<h4>" + content + "</h4>")}</p>`;
-            }
-
-            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === "#" && lines[i][3] === "#" && lines[i][4] === "#" && lines[i][5] === " ") {
-                const content = lines[i].split(" ").slice(1).join(" ");
-                html += `<p>${escapeHTML("<h5>" + content + "</h5>")}</p>`;
-            }
-
-            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === "#" && lines[i][3] === "#" && lines[i][4] === "#" && lines[i][5] === "#" && lines[i][6] === " ") {
-                const content = lines[i].split(" ").slice(1).join(" ");
-                html += `<p>${escapeHTML("<h6>" + content + "</h6>")}</p>`;
-            }
-
         }
 
         if (html !== undefined) {
