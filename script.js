@@ -10,4 +10,28 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
     }
+    
+    form.addEventListener("submit", e => {
+        e.preventDefault();
+        let val = textArea.value;
+        let lines = val.split('\n');
+        let html = ``;
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i] === "") {
+                console.log("jebem ti mamu");
+                continue;
+            }
+
+            if (lines[i].startsWith("#") && lines[i][1] === " ") {
+                const content = lines[i].split(" ").slice(1).join(" ");
+                html += `<p>${escapeHTML("<h1>" + content + "</h1>")}</p>`;
+            }
+
+            // console.log(lines[i]);
+        }
+        console.log(html);
+        if (html !== undefined) {
+            parsedContainer.insertAdjacentHTML("afterbegin", html);
+        }
+    })
 });
