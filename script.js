@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let lines = val.split('\n');
         let html = ``;
         for (let i = 0; i < lines.length; i++) {
+            lines[i] = lines[i].trim();
             if (lines[i] === "") {
                 console.log("jebem ti mamu");
                 continue;
@@ -27,9 +28,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 html += `<p>${escapeHTML("<h1>" + content + "</h1>")}</p>`;
             }
 
-            // console.log(lines[i]);
+            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === " ") {
+                const content = lines[i].split(" ").slice(1).join(" ");
+                html += `<p>${escapeHTML("<h2>" + content + "</h2>")}</p>`;
+            }
+
         }
-        console.log(html);
+        
         if (html !== undefined) {
             parsedContainer.insertAdjacentHTML("afterbegin", html);
         }
