@@ -33,8 +33,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 html += `<p>${escapeHTML("<h2>" + content + "</h2>")}</p>`;
             }
 
+            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === "#" && lines[i][3] === " ") {
+                const content = lines[i].split(" ").slice(1).join(" ");
+                html += `<p>${escapeHTML("<h3>" + content + "</h3>")}</p>`;
+            }
+
+            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === "#" && lines[i][3] === "#" && lines[i][4] === " ") {
+                const content = lines[i].split(" ").slice(1).join(" ");
+                html += `<p>${escapeHTML("<h4>" + content + "</h4>")}</p>`;
+            }
+
         }
-        
+
         if (html !== undefined) {
             parsedContainer.insertAdjacentHTML("afterbegin", html);
         }
