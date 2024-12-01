@@ -48,6 +48,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 html += `<p>${escapeHTML("<h5>" + content + "</h5>")}</p>`;
             }
 
+            if (lines[i][0] === "#" && lines[i][1] === "#" && lines[i][2] === "#" && lines[i][3] === "#" && lines[i][4] === "#" && lines[i][5] === "#" && lines[i][6] === " ") {
+                const content = lines[i].split(" ").slice(1).join(" ");
+                html += `<p>${escapeHTML("<h6>" + content + "</h6>")}</p>`;
+            }
+
         }
 
         if (html !== undefined) {
