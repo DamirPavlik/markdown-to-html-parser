@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
 
         if (html !== undefined) {
-            parsedContainer.insertAdjacentHTML("afterbegin", html);
+            parsedContainer.innerHTML = html;
         }
     })
 });
