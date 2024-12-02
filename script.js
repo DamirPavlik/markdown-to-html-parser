@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 console.log("jebem ti mamu");
                 continue;
             }
+            // headings
             let level = 0;
             while (level < line.length && line[level] === "#") {
                 level ++;
@@ -30,6 +31,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
             if (level >= 1 && level <= 6 && line[level] === " ") {
                 const content = line.slice(level + 1).trim();
                 html += `<p>${escapeHTML(`<h${level}>${content}</h${level}>`)}</p>`;
+            }
+
+            // paragraph
+            console.log(line)
+            if (line[0].match(/^[0-9a-z]+$/)) {
+                console.log("prislo sem: ", line);
+                html += `<p>${escapeHTML(`<p>${line}<p>`)}</p>`;
             }
         }
 
