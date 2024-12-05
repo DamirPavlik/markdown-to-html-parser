@@ -34,9 +34,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             }
 
             // paragraph
-            console.log(line)
-            if (line[0].match(/^[0-9a-z]+$/)) {
-                console.log("prislo sem: ", line);
+            if (line[0].match(/^[0-9a-zA-Z]+$/)) {
                 html += `<p>${escapeHTML(`<p>${line}<p>`)}</p>`;
             }
         }
@@ -44,5 +42,5 @@ document.addEventListener("DOMContentLoaded", (event) => {
         if (html !== undefined) {
             parsedContainer.innerHTML = html;
         }
-    })
+    });
 });
