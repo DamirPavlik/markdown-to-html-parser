@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let lines = val.split('\n');
         let html = ``;
         for (let i = 0; i < lines.length; i++) {
-            line = lines[i].trim();
+            let line = lines[i].trim();
             if (line === "") {
                 console.log("jebem ti mamu");
                 continue;
@@ -36,6 +36,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
             // paragraph
             if (line[0].match(/^[0-9a-zA-Z]+$/)) {
                 html += `<p>${escapeHTML(`<p>${line}<p>`)}</p>`;
+            }
+
+            // blockquote
+            if (line.startsWith(">") && line[1] === " ") {
+                const content = line.slice(2);
+                html += `<p>${escapeHTML(`<blockquote>${content}</blockquote>`)}</p>`
             }
         }
 
