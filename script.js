@@ -11,9 +11,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 .replace(/'/g, "&#039;");
     }
 
-    function parseBold(line) {
+    function parseItalicAndBold(line) {
         let result = "";
         let isBold = false;
+        let isItalic = false;
         let buffer = "";
 
         for (let i = 0; i < line.length; i++) {
@@ -26,13 +27,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     buffer = "";
                 }
                 isBold = !isBold;
-                i++;
-            } else {
+                i++; 
+            } 
+            else if (line[i] === "*") {
+                if (isItalic) {
+                    result += `<em>${buffer}</em>`;
+                    buffer = "";
+                } else {
+                    result += buffer;
+                    buffer = "";
+                }
+                isItalic = !isItalic;
+            } 
+            else {
                 buffer += line[i];
             }
         }
 
-        result += buffer;
+        result += buffer; 
         return result;
     }
 
@@ -50,7 +62,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             }
 
             // Process bold text
-            line = parseBold(line);
+            line = parseItalicAndBold(line);
 
             // Headings
             let level = 0;
