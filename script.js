@@ -11,10 +11,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 .replace(/'/g, "&#039;");
     }
 
-    function parseItalicAndBold(line) {
+    function parseMarkdown(line) {
         let result = "";
         let isBold = false;
         let isItalic = false;
+        let isStrikeThrough = false;
         let buffer = "";
 
         for (let i = 0; i < line.length; i++) {
@@ -39,6 +40,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 }
                 isItalic = !isItalic;
             } 
+            else if (line[i] === "~" && line[i + 1] === "~") {
+                if (isStrikeThrough) {
+                    result += `<del>${buffer}</del>`
+                    buffer = "";
+                } else {
+                    result += buffer;
+                    buffer = "";
+                }
+                isStrikeThrough = !isStrikeThrough
+                i++;
+            }
             else {
                 buffer += line[i];
             }
@@ -61,8 +73,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 continue;
             }
 
-            // Process bold text
-            line = parseItalicAndBold(line);
+            line = parseMarkdown(line);
 
             // Headings
             let level = 0;
