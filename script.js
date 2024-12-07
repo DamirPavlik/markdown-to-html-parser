@@ -68,11 +68,26 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let val = textArea.value;
         let lines = val.split('\n');
         let html = ``;
+        let isCodeBlock = false;
+        let codeBlockBuffer = "";
         
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i].trim();
             if (line === "") {
-                console.log("jebem ti mamu");
+                continue;
+            }
+
+            if (line.startsWith("```")) {
+                if (isCodeBlock) {
+                    html += `<p>${escapeHTML(`<pre><code>${codeBlockBuffer}</code></pre>`)}</p>`
+                    codeBlockBuffer = "";
+                }
+                isCodeBlock = !isCodeBlock;
+                continue;
+            }
+
+            if (isCodeBlock) {
+                codeBlockBuffer += (codeBlockBuffer ? "\n" : "") + line;
                 continue;
             }
 
@@ -101,6 +116,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 const content = line.slice(2);
                 html += `<p>${escapeHTML(`<blockquote>${content}</blockquote>`)}</p>`;
                 continue;
+            }
+
+            if (line[0] === "`" && line[1] === "`" && line[2] === "`") {
+
             }
         }
 
