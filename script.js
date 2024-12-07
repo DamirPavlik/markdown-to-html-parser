@@ -64,7 +64,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         return result;
     }
 
-
     form.addEventListener("submit", e => {
         e.preventDefault();
         const val = textArea.value;
@@ -74,8 +73,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let isCodeBlock = false;
         let codeBlockBuffer = "";
 
-
-        
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i].trim();
 
@@ -101,7 +98,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             line = parseMarkdown(line);
 
-            // Headings
+            // headings
             let level = 0;
             while (level < line.length && line[level] === "#") {
                 level++;
@@ -113,13 +110,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 continue;
             }
 
-            // Paragraph
+            // paragraph
             if (line[0].match(/^[0-9a-zA-Z]+$/)) {
                 html += `<p>${escapeHTML(`<p>${line}<p>`)}</p>`;
                 continue;
             }
 
-            // Blockquote
+            // blockquote
             if (line.startsWith(">") && line[1] === " ") {
                 const content = line.slice(2);
                 html += `<p>${escapeHTML(`<blockquote>${content}</blockquote>`)}</p>`;
@@ -128,24 +125,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             // img tag
             if (line.startsWith("!")) {
-                if (line[1] === "[" && line.includes("]")) {
-                    const altText = line.substring(
-                        line.indexOf("[") + 1,
-                        line.lastIndexOf("]")
-                    );
-                    const imageSource = line.substring(
-                        line.indexOf("(") + 1,
-                        line.lastIndexOf(")")
-                    )
-                    html += `<p>${escapeHTML(`<img src="${imageSource}" alt="${altText}"/>`)}</p>`
-                    continue;
+                let altText = "";
+                let imageSource = "";
+
+                if (line[1] === "[" && line.includes("]") && line.includes("(") && line.includes(")")) {
+                    altText = line.substring(line.indexOf("[") + 1, line.lastIndexOf("]"));
+                    imageSource = line.substring(line.indexOf("(") + 1, line.lastIndexOf(")"));
+                } else if (line[1] === "(" && line.includes(")")) {
+                    imageSource = line.substring(line.indexOf("(") + 1, line.lastIndexOf(")"));
                 }
-                if (line[1] === "(" && line.includes(")")) {
-                    const imageSource = line.substring(
-                        line.indexOf("(") + 1,
-                        line.lastIndexOf(")")
-                    )
-                    html += `<p>${escapeHTML(`<img src="${imageSource}"/>`)}</p>`
+
+                if (imageSource) {
+                    html += `<p>${escapeHTML(`<img src="${imageSource}" ${altText ? `alt="${altText}"` : ""} />`)}</p>`;
                     continue;
                 }
             }
