@@ -12,53 +12,56 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
 
     function parseMarkdown(line) {
+        const formats = [
+            { delimiter: "**", tag: "strong", flag: false },
+            { delimiter: "*", tag: "em", flag: false },
+            { delimiter: "~~", tag: "del", flag: false },
+        ];
+
         let result = "";
-        let isBold = false;
-        let isItalic = false;
-        let isStrikeThrough = false;
         let buffer = "";
+        let activeFormat = null;
 
         for (let i = 0; i < line.length; i++) {
-            if (line[i] === "*" && line[i + 1] === "*") {
-                if (isBold) {
-                    result += `<strong>${buffer}</strong>`;
+            const twoChar = line[i] + (line[i + 1] || "");
+            const oneChar = line[i];
+
+            let format = formats.find(f => f.delimiter === twoChar);
+            if (format) {
+                if (activeFormat === format) {
+                    result += `<${format.tag}>${buffer}</${format.tag}>`;
                     buffer = "";
+                    activeFormat = null;
                 } else {
                     result += buffer;
                     buffer = "";
+                    activeFormat = format;
                 }
-                isBold = !isBold;
                 i++; 
-            } 
-            else if (line[i] === "*") {
-                if (isItalic) {
-                    result += `<em>${buffer}</em>`;
+                continue;
+            }
+
+            format = formats.find(f => f.delimiter === oneChar);
+            if (format) {
+                if (activeFormat === format) {
+                    result += `<${format.tag}>${buffer}</${format.tag}>`;
                     buffer = "";
+                    activeFormat = null;
                 } else {
                     result += buffer;
                     buffer = "";
+                    activeFormat = format;
                 }
-                isItalic = !isItalic;
-            } 
-            else if (line[i] === "~" && line[i + 1] === "~") {
-                if (isStrikeThrough) {
-                    result += `<del>${buffer}</del>`
-                    buffer = "";
-                } else {
-                    result += buffer;
-                    buffer = "";
-                }
-                isStrikeThrough = !isStrikeThrough
-                i++;
+                continue;
             }
-            else {
-                buffer += line[i];
-            }
+
+            buffer += line[i];
         }
 
-        result += buffer; 
+        result += buffer;
         return result;
     }
+
 
     form.addEventListener("submit", e => {
         e.preventDefault();
