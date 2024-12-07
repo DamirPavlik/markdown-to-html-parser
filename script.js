@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
             { delimiter: "**", tag: "strong", flag: false },
             { delimiter: "*", tag: "em", flag: false },
             { delimiter: "~~", tag: "del", flag: false },
+            { delimiter: "__", tag: "u", flag: false },
+            { delimiter: "`", tag: "code", flag: false },
         ];
 
         let result = "";
@@ -65,18 +67,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     form.addEventListener("submit", e => {
         e.preventDefault();
-        let val = textArea.value;
-        let lines = val.split('\n');
+        const val = textArea.value;
+        const lines = val.split('\n');
+        
         let html = ``;
         let isCodeBlock = false;
         let codeBlockBuffer = "";
+
+
         
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i].trim();
+
+            // remove spaces
             if (line === "") {
                 continue;
             }
 
+            // code block
             if (line.startsWith("```")) {
                 if (isCodeBlock) {
                     html += `<p>${escapeHTML(`<pre><code>${codeBlockBuffer}</code></pre>`)}</p>`
@@ -118,8 +126,28 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 continue;
             }
 
-            if (line[0] === "`" && line[1] === "`" && line[2] === "`") {
-
+            // img tag
+            if (line.startsWith("!")) {
+                if (line[1] === "[" && line.includes("]")) {
+                    const altText = line.substring(
+                        line.indexOf("[") + 1,
+                        line.lastIndexOf("]")
+                    );
+                    const imageSource = line.substring(
+                        line.indexOf("(") + 1,
+                        line.lastIndexOf(")")
+                    )
+                    html += `<p>${escapeHTML(`<img src="${imageSource}" alt="${altText}"/>`)}</p>`
+                    continue;
+                }
+                if (line[1] === "(" && line.includes(")")) {
+                    const imageSource = line.substring(
+                        line.indexOf("(") + 1,
+                        line.lastIndexOf(")")
+                    )
+                    html += `<p>${escapeHTML(`<img src="${imageSource}"/>`)}</p>`
+                    continue;
+                }
             }
         }
 
