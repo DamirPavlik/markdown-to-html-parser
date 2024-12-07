@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const textArea = document.querySelector("textarea");
     const form = document.querySelector("form");
     const parsedContainer = document.querySelector(".parsed");
+    const previewContainer = document.querySelector(".preview");
 
     function escapeHTML(str) {
         return str.replace(/&/g, "&amp;")
@@ -9,6 +10,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
+    }
+    
+    function unescapeHTML(str) {
+        const tempElement = document.createElement("div");
+        tempElement.innerHTML = str;
+        return tempElement.textContent || tempElement.innerText || "";
     }
 
     function parseMarkdown(line) {
@@ -84,7 +91,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             // code block
             if (line.startsWith("```")) {
                 if (isCodeBlock) {
-                    html += `<p>${escapeHTML(`<pre><code>${codeBlockBuffer}</code></pre>`)}</p>`
+                    html += `${escapeHTML(`<pre><code>${codeBlockBuffer}</code></pre>`)}<br/>`
                     codeBlockBuffer = "";
                 }
                 isCodeBlock = !isCodeBlock;
@@ -106,20 +113,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             if (level >= 1 && level <= 6 && line[level] === " ") {
                 const content = line.slice(level + 1).trim();
-                html += `<p>${escapeHTML(`<h${level}>${content}</h${level}>`)}</p>`;
+                html += `${escapeHTML(`<h${level}>${content}</h${level}>`)}<br/>`;
                 continue;
             }
 
             // paragraph
             if (line[0].match(/^[0-9a-zA-Z]+$/)) {
-                html += `<p>${escapeHTML(`<p>${line}<p>`)}</p>`;
+                html += `${escapeHTML(`<p>${line}<p>`)}<br/>`;
                 continue;
             }
 
             // blockquote
             if (line.startsWith(">") && line[1] === " ") {
                 const content = line.slice(2);
-                html += `<p>${escapeHTML(`<blockquote>${content}</blockquote>`)}</p>`;
+                html += `${escapeHTML(`<blockquote>${content}</blockquote>`)}<br/>`;
                 continue;
             }
 
@@ -136,14 +143,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 }
 
                 if (imageSource) {
-                    html += `<p>${escapeHTML(`<img src="${imageSource}" ${altText ? `alt="${altText}"` : ""} />`)}</p>`;
+                    html += `${escapeHTML(`<img src="${imageSource}" ${altText ? `alt="${altText}"` : ""} />`)}<br/>`;
                     continue;
                 }
             }
         }
+        console.log("unescaped HTML: ", unescapeHTML(html));
+        console.log("HTML: ", html);
 
         if (html !== undefined) {
             parsedContainer.innerHTML = html;
+            previewContainer.innerHTML = unescapeHTML(html);
         }
     });
 });
