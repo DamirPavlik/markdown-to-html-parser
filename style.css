@@ -6,7 +6,7 @@ table {
         padding: 8px;
     }
 }
-.parsed {
+.parsed, .preview {
     border: 1px solid black;
     margin-top: 30px;
     padding: 10px;
