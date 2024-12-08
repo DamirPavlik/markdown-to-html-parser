@@ -80,7 +80,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let isCodeBlock = false;
         let codeBlockBuffer = "";
 
+        let ulFlag = false; 
+        let ulBuffer = "";  
+
         for (let i = 0; i < lines.length; i++) {
+            if (lines[i] === " *") {
+                if (ulFlag) {
+                    html += `${escapeHTML(`<ul>${ulBuffer}</ul>`)}<br/>`
+                    ulBuffer = "";
+                }
+                ulFlag = !ulFlag; 
+                continue;
+            }
+
+            if (ulFlag) {
+                ulBuffer += `<li>${parseMarkdown(lines[i])}</li>`;
+                continue;
+            }
+
             let line = lines[i].trim();
 
             // remove spaces
@@ -118,7 +135,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             }
 
             // paragraph
-            if (line[0].match(/^[0-9a-zA-Z]+$/)) {
+            if (line && line[0] && line[0].match(/^[0-9a-zA-Z]+$/)) {
                 html += `${escapeHTML(`<p>${line}<p>`)}<br/>`;
                 continue;
             }
@@ -148,9 +165,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 }
             }
         }
-        console.log("unescaped HTML: ", unescapeHTML(html));
-        console.log("HTML: ", html);
-
         if (html !== undefined) {
             parsedContainer.innerHTML = html;
             previewContainer.innerHTML = unescapeHTML(html);
