@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const parsedContainer = document.querySelector(".parsed");
     const previewContainer = document.querySelector(".preview");
 
+    /**
+     * Escapes HTML special characters to prevent XSS.
+     * @param {string} str - The input string to escape.
+     * @returns {string} - The escaped string.
+    */
     function escapeHTML(str) {
         return str.replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
@@ -12,12 +17,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 .replace(/'/g, "&#039;");
     }
     
+    /**
+     * Unescapes HTML special characters.
+     * @param {string} str - The escaped string to unescape.
+     * @returns {string} - The unescaped string.
+    */
     function unescapeHTML(str) {
         const tempElement = document.createElement("div");
         tempElement.innerHTML = str;
         return tempElement.textContent || tempElement.innerText || "";
     }
-
+    
+    /**
+     * Parses Markdown formatting into HTML.
+     * Supports bold (**), italic (*), underline (__), strikethrough (~~), and inline code (`).
+     * @param {string} line - The Markdown-formatted line.
+     * @returns {string} - The HTML-formatted line.
+    */
     function parseMarkdown(line) {
         const formats = [
             { delimiter: "**", tag: "strong", flag: false },
@@ -71,6 +87,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
         return result;
     }
     
+    /**
+     * Converts Markdown links into HTML anchor tags.
+     * @param {string} line - The line containing Markdown links.
+     * @returns {string} - The line with converted HTML links.
+    */
     function checkAHref(line) {
         let result = "";
         let buffer = "";
@@ -124,6 +145,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
         return result;
     }
 
+    /**
+     * Handles form submission to parse the Markdown content into HTML.
+     * @param {Event} e - The form submission event.
+    */
     form.addEventListener("submit", e => {
         e.preventDefault();
         const val = textArea.value;
