@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let buffer = "";
         let activeFormat = null;
 
-        for (let i = 0; i < line.length; i++) {
+        for (let i = 0; i < line.length; ++i) {
             const twoChar = line[i] + (line[i + 1] || "");
             const oneChar = line[i];
 
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let ulFlag = false; 
         let ulBuffer = "";  
 
-        for (let i = 0; i < lines.length; i++) {
+        for (let i = 0; i < lines.length; ++i) {
             if (lines[i] === " *") {
                 if (ulFlag) {
                     html += `${escapeHTML(`<ul>${ulBuffer}</ul>`)}<br/>`
