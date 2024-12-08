@@ -70,6 +70,59 @@ document.addEventListener("DOMContentLoaded", (event) => {
         result += buffer;
         return result;
     }
+    
+    function checkAHref(line) {
+        let result = "";
+        let buffer = "";
+        let isLinkText = false;
+        let isLinkUrl = false;
+        let linkText = "";
+        let linkUrl = "";
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+
+            if (char === "[" && !isLinkText && !isLinkUrl) {
+                if (buffer) {
+                    result += buffer; 
+                    buffer = "";
+                }
+                isLinkText = true; 
+                continue;
+            }
+
+            if (char === "]" && isLinkText && !isLinkUrl) {
+                isLinkText = false; 
+                if (line[i + 1] === "(") {
+                    isLinkUrl = true; 
+                    i++; 
+                } else {
+                    result += `[${linkText}]`; 
+                    linkText = "";
+                }
+                continue;
+            }
+
+            if (char === ")" && isLinkUrl) {
+                isLinkUrl = false; 
+                result += `<a href="${escapeHTML(linkUrl)}">${escapeHTML(linkText)}</a>`;
+                linkText = "";
+                linkUrl = "";
+                continue;
+            }
+
+            if (isLinkText) {
+                linkText += char; 
+            } else if (isLinkUrl) {
+                linkUrl += char; 
+            } else {
+                buffer += char; 
+            }
+        }
+
+        result += buffer; 
+        return result;
+    }
 
     form.addEventListener("submit", e => {
         e.preventDefault();
@@ -121,6 +174,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             }
 
             line = parseMarkdown(line);
+            line = checkAHref(line);
 
             // headings
             let level = 0;
